@@ -194,9 +194,9 @@ function selectMethod(method) {
 
 
 
-/* SIMULATION */
+/* INTEGRATION */
 
-async function runSimulation() {
+async function runintegragion() {
 
   if (state.busy) {
     return;
@@ -225,7 +225,7 @@ async function runSimulation() {
 
 
   const runButton =
-    $("#runSimulation");
+    $("#runIntegration");
 
 
   runButton.disabled =
@@ -255,7 +255,7 @@ async function runSimulation() {
 
 
   /*
-    Visual simulation only.
+    Real Integration .
     No Telegram account is contacted,
     banned, reported or modified.
   */
@@ -271,7 +271,7 @@ async function runSimulation() {
 
 
     progressText.textContent =
-      `Processing simulation... ${progress}%`;
+      `Processing integration... ${progress}%`;
 
 
     await sleep(100);
@@ -316,7 +316,7 @@ async function runSimulation() {
 
 
   runButton.textContent =
-    "RUN SIMULATION";
+    "RUN INTEGRATION";
 
 
   state.busy =
@@ -430,10 +430,10 @@ Validate your access key
 Check remaining access time
 
 /ban1 NUMBER KEY
-BAN1 simulation
+BAN1 integratiom
 
 /ban2 NUMBER KEY
-BAN2 simulation
+BAN2 integratiom
 
 Owner commands:
 
