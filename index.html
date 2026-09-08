@@ -15,7 +15,6 @@
             --gold-dark: #8B6914;
             --text-main: #EAEAEA;
             --text-muted: #999;
-            --glass: rgba(255, 255, 255, 0.05);
             --border: 1px solid rgba(212, 175, 55, 0.3);
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
@@ -39,7 +38,7 @@
         .container {
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px 15px 80px 15px; /* Bottom padding for fixed nav */
+            padding: 20px 15px 80px 15px; 
         }
 
         /* --- HEADER --- */
@@ -105,19 +104,11 @@
             cursor: pointer;
             border-radius: 4px;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
-        .btn-gold:active { transform: scale(0.98); }
-        .btn-gold::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 3s infinite;
-        }
+        .btn-gold:active { transform: scale(0.96); opacity: 0.9; }
         
         .btn-outline {
             background: transparent;
@@ -256,7 +247,6 @@
         .nav-item.active { color: var(--gold); }
 
         /* --- ANIMATIONS --- */
-        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         @keyframes pulse-gold { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes countDown { from { width: 100%; } to { width: 0%; } }
@@ -354,8 +344,9 @@
         <div id="view-key" class="hidden">
             <div class="glass-card">
                 <h2 class="gold-text text-center" style="margin-bottom: 20px;">Enter Access Key</h2>
-                <input type="text" class="input-field" placeholder="Paste Code (e.g. WK-A1B2-2222-Z7W6)">
-                <button class="btn-gold" style="margin-top: 20px;" onclick="processKey()">ACTIVATE</button>
+                <!-- Fixed: Explicit ID and direct onclick -->
+                <input type="text" id="key-input" class="input-field" placeholder="Paste Code (e.g. WK-A1B2-1111-X9Y8)">
+                <button id="activate-btn" class="btn-gold" style="margin-top: 20px;">ACTIVATE</button>
             </div>
         </div>
 
@@ -497,7 +488,6 @@
             document.getElementById('pay-modal').classList.add('active');
             setTimeout(() => {
                 document.getElementById('pay-modal').classList.remove('active');
-                // Redirect to Telegram
                 window.location.href = "https://t.me/dannyisnowdylan";
             }, 2000);
         }
@@ -526,24 +516,37 @@
             location.reload();
         }
 
-        function processKey() {
-            const keyInput = document.querySelector('.input-field');
-            const key = keyInput.value.trim();
-            const plan = getKeyPlan(key);
-            
-            if (plan) {
-                // Store session
-                localStorage.setItem('dannySession', JSON.stringify({ plan, key }));
-                switchView('view-dashboard');
-                startTimer(getPlanDuration(plan));
-            } else {
-                alert("Invalid Access Key");
-            }
-        }
-
         function launchMethod(method) {
             switchView('method-' + method);
         }
+
+        // --- KEY ACTIVATION (FIXED) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const activateBtn = document.getElementById('activate-btn');
+            
+            if (activateBtn) {
+                activateBtn.addEventListener('click', function() {
+                    const input = document.getElementById('key-input');
+                    const key = input.value.trim();
+                    
+                    if (!key) {
+                        alert("Please enter an access key.");
+                        return;
+                    }
+
+                    const plan = getKeyPlan(key);
+                    
+                    if (plan) {
+                        // Save session
+                        localStorage.setItem('dannySession', JSON.stringify({ plan, key }));
+                        switchView('view-dashboard');
+                        startTimer(getPlanDuration(plan));
+                    } else {
+                        alert("Invalid Access Key. Please check and try again.");
+                    }
+                });
+            }
+        });
 
         // Check session on load
         if(localStorage.getItem('dannySession')) {
@@ -554,5 +557,3 @@
     </script>
 </body>
 </html>
-
-https://notrack.ai/
